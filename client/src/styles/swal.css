@@ -1,0 +1,29 @@
+.swal2-popup {
+    font-family: 'Inter', sans-serif !important;
+    border-radius: 12px !important;
+}
+
+.swal2-title {
+    color: #002F35 !important;
+    font-weight: 600 !important;
+}
+
+.swal2-html-container {
+    color: #666 !important;
+}
+
+.swal2-confirm {
+    background: linear-gradient(90deg, #00899B 0%, #002F35 100%) !important;
+    border-radius: 17px !important;
+    padding: 12px 24px !important;
+    font-weight: 600 !important;
+}
+
+.swal2-confirm:focus {
+    box-shadow: 0 0 0 3px rgba(0, 137, 155, 0.25) !important;
+}
+
+.swal2-spinner {
+    border-color: #00899B !important;
+    border-right-color: transparent !important;
+}

@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <!-- Sparkle Star -->
+  <symbol id="sparkle" viewBox="0 0 60 60">
+    <path d="M30 0L35 25L50 30L35 35L30 60L25 35L10 30L25 25L30 0Z" fill="currentColor"/>
+  </symbol>
+  
+  <!-- Curved Line -->
+  <symbol id="curved-line" viewBox="0 0 100 50">
+    <path d="M0 40C25 40 25 10 50 10C75 10 75 40 100 40" stroke="currentColor" fill="none" stroke-width="2"/>
+  </symbol>
+  
+  <!-- Flower -->
+  <symbol id="flower" viewBox="0 0 100 100">
+    <path d="M50 10C55 20 65 20 70 10C75 0 65 0 60 10C55 20 45 20 50 10Z" fill="currentColor"/>
+    <path d="M70 50C80 55 80 65 70 70C60 75 60 65 70 60C80 55 80 45 70 50Z" fill="currentColor"/>
+    <path d="M50 90C45 80 35 80 30 90C25 100 35 100 40 90C45 80 55 80 50 90Z" fill="currentColor"/>
+    <path d="M30 50C20 45 20 35 30 30C40 25 40 35 30 40C20 45 20 55 30 50Z" fill="currentColor"/>
+  </symbol>
+
+  <!-- Dots Pattern -->
+  <symbol id="dots" viewBox="0 0 100 100">
+    <circle cx="20" cy="20" r="5" fill="currentColor"/>
+    <circle cx="50" cy="20" r="5" fill="currentColor"/>
+    <circle cx="80" cy="20" r="5" fill="currentColor"/>
+    <circle cx="20" cy="50" r="5" fill="currentColor"/>
+    <circle cx="50" cy="50" r="5" fill="currentColor"/>
+    <circle cx="80" cy="50" r="5" fill="currentColor"/>
+    <circle cx="20" cy="80" r="5" fill="currentColor"/>
+    <circle cx="50" cy="80" r="5" fill="currentColor"/>
+    <circle cx="80" cy="80" r="5" fill="currentColor"/>
+  </symbol>
+
+  <!-- Abstract Shape -->
+  <symbol id="abstract-shape" viewBox="0 0 100 100">
+    <path d="M10 40C20 10 80 10 90 40C100 70 70 90 50 90C30 90 0 70 10 40Z" fill="currentColor"/>
+  </symbol>
+
+  <!-- Sunburst -->
+  <symbol id="sunburst" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="20" fill="currentColor"/>
+    <path d="M50 0L55 25L50 20L45 25L50 0Z" fill="currentColor"/>
+    <path d="M50 100L55 75L50 80L45 75L50 100Z" fill="currentColor"/>
+    <path d="M0 50L25 55L20 50L25 45L0 50Z" fill="currentColor"/>
+    <path d="M100 50L75 55L80 50L75 45L100 50Z" fill="currentColor"/>
+    <path d="M15 15L30 30L25 25L15 15Z" fill="currentColor"/>
+    <path d="M85 15L70 30L75 25L85 15Z" fill="currentColor"/>
+    <path d="M15 85L30 70L25 75L15 85Z" fill="currentColor"/>
+    <path d="M85 85L70 70L75 75L85 85Z" fill="currentColor"/>
+  </symbol>
+
+  <!-- Wave -->
+  <symbol id="wave" viewBox="0 0 200 50">
+    <path d="M0 25C25 10 75 40 100 25C125 10 175 40 200 25" stroke="currentColor" fill="none" stroke-width="2"/>
+  </symbol>
+
+  <!-- Spiral -->
+  <symbol id="spiral" viewBox="0 0 100 100">
+    <path d="M50 50C50 25 25 25 25 50C25 75 50 75 50 50Z" stroke="currentColor" fill="none" stroke-width="2"/>
+    <path d="M50 50C50 35 35 35 35 50C35 65 50 65 50 50Z" stroke="currentColor" fill="none" stroke-width="2"/>
+    <path d="M50 50C50 45 45 45 45 50C45 55 50 55 50 50Z" stroke="currentColor" fill="none" stroke-width="2"/>
+  </symbol>
+</svg>

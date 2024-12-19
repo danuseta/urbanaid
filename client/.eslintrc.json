@@ -1,0 +1,16 @@
+{
+  "extends": ["eslint:recommended", "eslint-config-dicodingacademy"],
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "rules": {
+    "camelcase": "off",     
+    "no-underscore-dangle": "off"  
+  }
+}

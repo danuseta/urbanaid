@@ -1,0 +1,88 @@
+// urbanaid/server/prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        Int       @id @default(autoincrement())
+  nama      String    
+  email     String    @unique
+  password  String
+  role      Role      @default(admin)
+  createdAt DateTime  @default(now()) @map("created_at")
+  lastLogin DateTime? @map("last_login")
+
+  @@map("admins")
+}
+
+model User {
+  id             Int              @id @default(autoincrement())
+  laporanMasuk   LaporanMasuk[]
+  riwayatLaporan RiwayatLaporan[]
+  reviews        Review[]
+}
+
+model LaporanMasuk {
+  id                 Int      @id @default(autoincrement())
+  judul             String
+  jenisInfrastruktur String   @map("jenis_infrastruktur")
+  tanggalKejadian    DateTime @map("tanggal_kejadian")
+  deskripsi         String   @db.Text
+  alamat            String   @db.Text
+  buktiLampiran     String   @map("bukti_lampiran")
+  userId            Int      @map("user_id")
+  status            String   @default("pending")
+  createdAt         DateTime @default(now()) @map("created_at")
+  latitude          Decimal? @db.Decimal
+  longitude         Decimal? @db.Decimal
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("laporan_masuk")
+}
+
+model RiwayatLaporan {
+  id                 Int      @id @default(autoincrement())
+  judul             String
+  jenisInfrastruktur String   @map("jenis_infrastruktur")
+  deskripsi         String   @db.Text
+  tanggalKejadian    DateTime @map("tanggal_kejadian")
+  tanggalSelesai     DateTime @map("tanggal_selesai")
+  alamat            String   @db.Text
+  status            Status
+  keteranganLaporan  String   @map("keterangan_laporan") @db.Text
+  buktiLampiran     String   @map("bukti_lampiran")
+  userId            Int      @map("user_id")
+  createdAt         DateTime @default(now()) @map("created_at")
+  latitude          Decimal? @db.Decimal
+  longitude         Decimal? @db.Decimal
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("riwayat_laporan")
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  laporanId  Int      @map("laporan_id")
+  userId     Int      @map("user_id")
+  rating     Int
+  reviewText String   @map("review_text") @db.Text
+  createdAt  DateTime @default(now()) @map("created_at")
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@map("reviews")
+}
+
+enum Role {
+  admin
+  superadmin
+}
+
+enum Status {
+  diterima
+  ditolak
+}

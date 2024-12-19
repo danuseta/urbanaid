@@ -1,0 +1,252 @@
+.decorative-element {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.decoration-teal {
+    color: #00899B;
+}
+
+.decoration-white {
+    color: #FFFFFF;
+}
+
+.decoration-light {
+    color: rgba(0, 137, 155, 0.1);
+}
+
+.animate-float {
+    animation: float 8s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+    animation: spin 15s linear infinite;
+}
+
+.animate-spin {
+    animation: spin 20s linear infinite;
+}
+
+.animate-pulse-slow {
+    animation: pulse 4s ease-in-out infinite;
+}
+
+.animate-bounce {
+    animation: bounce 2s ease-in-out infinite;
+}
+
+.animate-wobble {
+    animation: wobble 1.5s ease-in-out infinite;
+}
+
+.animate-slide {
+    animation: slide 3s ease-in-out infinite;
+}
+
+.animate-roll {
+    animation: roll 5s linear infinite;
+}
+
+.hero-element-1 {
+    top: -2.5rem;
+    right: 15%;
+    width: 5rem;
+    height: 5rem;
+    opacity: 0.4;
+}
+
+.hero-element-2 {
+    bottom: 20%;
+    left: -1.25rem;
+    width: 8rem;
+    height: 8rem;
+    opacity: 0.2;
+}
+
+.hero-element-3 {
+    top: 30%;
+    right: 10%;
+    width: 4rem;
+    height: 4rem;
+    opacity: 0.3;
+    transform: rotate(45deg);
+}
+
+.intro-element-1 {
+    top: 5rem;
+    right: -1.25rem;
+    width: 6rem;
+    height: 6rem;
+    opacity: 0.25;
+    transform: rotate(12deg);
+}
+
+.intro-element-2 {
+    bottom: 30%;
+    left: -2.5rem;
+    width: 8rem;
+    height: 8rem;
+    opacity: 0.15;
+}
+
+.stats-element-1 {
+    top: -1.25rem;
+    right: 5%;
+    width: 8rem;
+    height: 8rem;
+    opacity: 0.2;
+}
+
+.stats-element-2 {
+    bottom: 10%;
+    left: -1.25rem;
+    width: 7rem;
+    height: 7rem;
+    opacity: 0.3;
+}
+
+.process-element-1 {
+    top: 2.5rem;
+    right: -1.25rem;
+    width: 7rem;
+    height: 7rem;
+    opacity: 0.2;
+    transform: rotate(45deg);
+}
+
+.process-element-2 {
+    bottom: 20%;
+    left: -2.5rem;
+    width: 8rem;
+    height: 8rem;
+    opacity: 0.15;
+}
+
+.testimonial-element-1 {
+    top: 1.25rem;
+    left: 5%;
+    width: 6rem;
+    height: 6rem;
+    opacity: 0.2;
+}
+
+.testimonial-element-2 {
+    bottom: 10%;
+    right: 5%;
+    width: 7rem;
+    height: 7rem;
+    opacity: 0.25;
+    transform: rotate(12deg);
+}
+
+@keyframes float {
+    0%, 100% { 
+        transform: translateY(0) rotate(0deg);
+    }
+    50% { 
+        transform: translateY(-15px) rotate(5deg);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.5;
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes wobble {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-5deg);
+    }
+    50% {
+        transform: rotate(5deg);
+    }
+    75% {
+        transform: rotate(-5deg);
+    }
+}
+
+@keyframes slide {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(20px);
+    }
+}
+
+@keyframes roll {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(180deg);
+    }
+}
+
+.element-sm {
+    width: 4rem;
+    height: 4rem;
+}
+
+.element-md {
+    width: 6rem;
+    height: 6rem;
+}
+
+.element-lg {
+    width: 8rem;
+    height: 8rem;
+}
+
+.element-faded {
+    opacity: 0.15;
+}
+
+.element-subtle {
+    opacity: 0.3;
+}
+
+.element-visible {
+    opacity: 0.5;
+}
+
+.rotate-12 {
+    transform: rotate(12deg);
+}
+
+.rotate-45 {
+    transform: rotate(45deg);
+}
+
+.rotate-90 {
+    transform: rotate(90deg);
+}
