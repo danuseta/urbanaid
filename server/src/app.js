@@ -25,8 +25,7 @@ const init = async () => {
     routes: {
       cors: {
         origin: [
-          'https://urbanaid-client.vercel.app', 'https://urbanaid-mocha.vercel.app/',
-          'http://localhost:9000'
+          '*'
         ],
         headers: [
           'Accept',
