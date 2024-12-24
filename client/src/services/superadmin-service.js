@@ -1,6 +1,4 @@
-import { config } from '../config';
 const BASE_URL = 'https://urbanaid-server.up.railway.app/api';
-const CLIENT_URL = 'https://urbanaid-client.vercel.app';
 
 const SuperAdminService = {
   async getAllAdmins(page = 1, limit = 10, search = '') {

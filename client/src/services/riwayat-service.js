@@ -1,6 +1,4 @@
-import { config } from '../config';
 const BASE_URL = 'https://urbanaid-server.up.railway.app/api';
-const CLIENT_URL = 'https://urbanaid-client.vercel.app';
 
 const RiwayatService = {
   async getRiwayatByUser() {
