@@ -68,13 +68,15 @@ module.exports = merge(common, {
    },
  },
  plugins: [
-   new DefinePlugin({
-     'process.env': {
-       'NODE_ENV': JSON.stringify('production'),
-       'BASE_URL': JSON.stringify('https://urbanaid-server.up.railway.app/api'),
-       'CLIENT_URL': JSON.stringify('https://urbanaid-client.vercel.app')
-     }
-   }),
+  new DefinePlugin({
+    'process.env': {
+      'NODE_ENV': JSON.stringify('production'),
+      'DEV_API_URL': JSON.stringify('http://localhost:5000/api'),
+      'PROD_API_URL': JSON.stringify('https://urbanaid-server.up.railway.app/api'),
+      'DEV_CLIENT_URL': JSON.stringify('http://localhost:9000'),  
+      'PROD_CLIENT_URL': JSON.stringify('https://urbanaid-client.vercel.app')
+    }
+  }),
    new WorkboxWebpackPlugin.GenerateSW({
      clientsClaim: true,
      skipWaiting: true,

@@ -50,8 +50,14 @@ module.exports = merge(common, {
     },
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('development')
+    new DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('development'),
+        'DEV_API_URL': JSON.stringify('http://localhost:5000/api'),
+        'PROD_API_URL': JSON.stringify('https://urbanaid-server.up.railway.app/api'),
+        'DEV_CLIENT_URL': JSON.stringify('http://localhost:9000'),
+        'PROD_CLIENT_URL': JSON.stringify('https://urbanaid-client.vercel.app')
+      }
     }),
   ],
   watchOptions: {
