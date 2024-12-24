@@ -11,6 +11,7 @@ const superadminRoutes = require('./routes/superadmin.routes');
 require('dotenv').config();
 
 const validate = async (decoded, request, h) => {
+  // Allow superadmin routes only for superadmin role
   if (request.path.startsWith('/api/superadmin') && decoded.role !== 'superadmin') {
     return { isValid: false };
   }
@@ -19,15 +20,16 @@ const validate = async (decoded, request, h) => {
 
 const init = async () => {
   const server = Hapi.server({
-    port: process.env.PORT || 5000,
+    port: process.env.PORT || process.env.RAILWAY_PORT || 3000,
     host: '0.0.0.0',
     routes: {
       cors: {
-        origin: ['https://urbanaid-client.vercel.app'],
+        origin: ['*'], // In production, specify your client domain
         headers: [
           'Accept',
-          'Authorization', 
+          'Authorization',
           'Content-Type',
+          'If-None-Match',
           'X-Requested-With',
           'cache-control',
           'Origin',
@@ -36,6 +38,9 @@ const init = async () => {
         ],
         credentials: true,
         maxAge: 600
+      },
+      files: {
+        relativeTo: Path.join(__dirname, 'public')
       }
     },
   });
@@ -46,19 +51,42 @@ const init = async () => {
     { plugin: Inert }
   ]);
 
+  // Health check route - no auth required
+  server.route({
+    method: 'GET',
+    path: '/',
+    options: {
+      auth: false
+    },
+    handler: (request, h) => {
+      return { 
+        status: 'healthy', 
+        message: 'Server is running',
+        timestamp: new Date().toISOString()
+      };
+    }
+  });
+
   // Configure JWT authentication
   server.auth.strategy('jwt', 'jwt', {
     key: process.env.JWT_SECRET,
     validate,
-    verifyOptions: { algorithms: ['HS256'] }
+    verifyOptions: { 
+      algorithms: ['HS256'],
+      ignoreExpiration: false
+    }
   });
 
+  // Set default auth strategy
   server.auth.default('jwt');
 
-  // Static assets route
+  // Static assets route - no auth required
   server.route({
     method: 'GET',
     path: '/assets/{param*}',
+    options: {
+      auth: false
+    },
     handler: {
       directory: {
         path: '.',
@@ -82,7 +110,7 @@ const init = async () => {
     handler: (request, h) => h.continue
   });
 
-  // Auth routes configuration
+  // Auth routes configuration - no auth required for login/register
   server.route({
     method: 'POST',
     path: '/api/auth/{param*}',
@@ -108,12 +136,55 @@ const init = async () => {
 
   server.route(routes);
 
-  // Catch-all route for SPA
+  // Catch-all route for SPA - no auth required
   server.route({
     method: 'GET',
     path: '/{path*}',
+    options: {
+      auth: false
+    },
     handler: {
       file: 'index.html'
+    }
+  });
+
+  // Global error handling
+  server.ext('onPreResponse', (request, h) => {
+    const response = request.response;
+    
+    if (!response.isBoom) {
+      return h.continue;
+    }
+
+    // Handle specific error cases
+    switch (response.output.statusCode) {
+      case 401:
+        return h.response({
+          statusCode: 401,
+          error: 'Unauthorized',
+          message: response.message || 'Missing or invalid authentication token'
+        }).code(401);
+      
+      case 403:
+        return h.response({
+          statusCode: 403,
+          error: 'Forbidden',
+          message: response.message || 'You do not have permission to access this resource'
+        }).code(403);
+      
+      case 404:
+        return h.response({
+          statusCode: 404,
+          error: 'Not Found',
+          message: response.message || 'The requested resource was not found'
+        }).code(404);
+      
+      default:
+        return h.response({
+          statusCode: response.output.statusCode,
+          error: response.output.payload.error,
+          message: response.message || 'An internal server error occurred'
+        }).code(response.output.statusCode);
     }
   });
 
@@ -133,10 +204,11 @@ const init = async () => {
 
   await server.start();
   console.log('Server running on %s', server.info.uri);
+  console.log('Environment:', process.env.NODE_ENV);
 };
 
 process.on('unhandledRejection', (err) => {
-  console.log(err);
+  console.error('Unhandled rejection:', err);
   process.exit(1);
 });
 
