@@ -103,13 +103,6 @@ const init = async () => {
     },
     handler: (request, h) => h.continue
   });
-      payload: {
-        parse: true,
-        allow: ['application/json']
-      }
-    },
-    handler: (request, h) => h.continue
-  });
 
   server.auth.strategy('jwt', 'jwt', {
     key: process.env.JWT_SECRET,
