@@ -1,7 +1,8 @@
 import { config } from '../config';
 
 class ReviewService {
-  static BASE_URL = config.BASE_URL;
+  static BASE_URL = 'https://urbanaid-server.up.railway.app/api';
+  static CLIENT_URL = 'https://urbanaid-client.vercel.app';
 
   static async createReview(reviewData) {
     try {

@@ -25,9 +25,8 @@ const init = async () => {
     routes: {
       cors: {
         origin: [
-          process.env.NODE_ENV === 'development' 
-            ? process.env.DEV_CLIENT_URL 
-            : process.env.PROD_CLIENT_URL
+          'https://urbanaid-client.vercel.app',
+          'http://localhost:9000'
         ],
         headers: [
           'Accept',

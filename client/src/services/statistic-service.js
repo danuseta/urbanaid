@@ -1,6 +1,6 @@
 import { config } from '../config';
-const BASE_URL = config.BASE_URL;
-const CLIENT_URL = config.CLIENT_URL;
+const BASE_URL = 'https://urbanaid-server.up.railway.app/api';
+const CLIENT_URL = 'https://urbanaid-client.vercel.app';
 
 const StatisticService = {
   async getReportStatistics() {

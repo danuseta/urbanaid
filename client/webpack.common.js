@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -73,16 +72,6 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-        'DEV_API_URL': JSON.stringify('http://localhost:5000/api'),
-        'PROD_API_URL': JSON.stringify('https://urbanaid-server.up.railway.app/api'),
-        'DEV_CLIENT_URL': JSON.stringify('http://localhost:9000'),
-        'PROD_CLIENT_URL': JSON.stringify('https://urbanaid-client.vercel.app')
-      }
-    }),
     
     new HtmlWebpackPlugin({
       filename: 'index.html',
@@ -122,19 +111,17 @@ module.exports = {
         /sw\.js$/,
       ],
     }),
-
     new BundleAnalyzerPlugin(),
-
     new ImageminWebpWebpackPlugin({
-      config: [
-        {
-          test: /\.(jpe?g|png)/,
-          options: {
-            quality: 80,
+        config: [
+          {
+            test: /\.(jpe?g|png)/,
+            options: {
+              quality: 80,
+            },
           },
-        },
-      ],
-      overrideExtension: true,
-    }),
+        ],
+        overrideExtension: true,
+      }),
   ],
 };
