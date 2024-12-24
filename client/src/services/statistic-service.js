@@ -1,20 +1,13 @@
-const BASE_URL = 'https://urbanaid-server.up.railway.app/api';
+// statistic-service.js
+import ApiService from './api-service';
 
-const StatisticService = {
-  async getReportStatistics() {
+class StatisticService extends ApiService {
+  static async getReportStatistics() {
     try {
-      const response = await fetch(`${BASE_URL}/statistics/reports`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const result = await this.fetchWithAuth('/statistics/reports', {
+        method: 'GET'
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch statistics');
-      }
-
-      return await response.json();
+      return result;
     } catch (error) {
       console.error('Error fetching report statistics:', error);
       return {
@@ -23,44 +16,21 @@ const StatisticService = {
         pending: 0
       };
     }
-  },
+  }
 
-  async getReviews() {
+  static async getReviews() {
     try {
-      const response = await fetch(`${BASE_URL}/statistics/reviews`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch reviews');
-      }
-
-      return await response.json();
+      const result = await this.fetchWithAuth('/statistics/reviews');
+      return result;
     } catch (error) {
       console.error('Error fetching reviews:', error);
       return [];
     }
-  },
+  }
 
-  async getUserStatistics(userId) {
+  static async getUserStatistics(userId) {
     try {
-      const response = await fetch(`${BASE_URL}/statistics/user/${userId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch user statistics');
-      }
-
-      const result = await response.json();
-      console.log('Statistics response:', result);
-
+      const result = await this.fetchWithAuth(`/statistics/user/${userId}`);
       return {
         totalReports: result.data?.totalReports || 0,
         resolved: result.data?.resolved || 0,
@@ -74,22 +44,11 @@ const StatisticService = {
         inProgress: 0
       };
     }
-  },
-  async getDashboardData() {
+  }
+
+  static async getDashboardData() {
     try {
-      const response = await fetch(`${BASE_URL}/statistics/dashboard`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch dashboard data');
-      }
-
-      const result = await response.json();
-
+      const result = await this.fetchWithAuth('/statistics/dashboard');
       return {
         stats: {
           total: result.data.dashboard.total_count || 0,
@@ -119,12 +78,7 @@ const StatisticService = {
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
       return {
-        stats: {
-          total: 0,
-          pending: 0,
-          accepted: 0,
-          rejected: 0
-        },
+        stats: { total: 0, pending: 0, accepted: 0, rejected: 0 },
         monthlyData: [],
         infraTypes: [],
         recentUsers: [],
@@ -132,6 +86,6 @@ const StatisticService = {
       };
     }
   }
-};
+}
 
 export default StatisticService;

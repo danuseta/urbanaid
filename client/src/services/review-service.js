@@ -1,31 +1,14 @@
-class ReviewService {
-  static BASE_URL = 'https://urbanaid-server.up.railway.app/api';
+// review-service.js
+import ApiService from './api-service';
 
+class ReviewService extends ApiService {
   static async createReview(reviewData) {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('Token tidak ditemukan');
-      }
-
       console.log('Sending review data:', reviewData);
-
-      const response = await fetch(`${ReviewService.BASE_URL}/reviews`, {
+      return await this.fetchWithAuth('/reviews', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
         body: JSON.stringify(reviewData)
       });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.message || `HTTP error! status: ${response.status}`);
-      }
-
-      const responseData = await response.json();
-      return responseData;
     } catch (error) {
       console.error('Error in createReview:', error);
       throw error;
@@ -34,24 +17,8 @@ class ReviewService {
 
   static async getReviewsByLaporanId(laporanId) {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('Token tidak ditemukan');
-      }
-
-      const response = await fetch(`${ReviewService.BASE_URL}/reviews/laporan/${laporanId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.message || `HTTP error! status: ${response.status}`);
-      }
-
-      const responseData = await response.json();
-      return responseData.data;
+      const result = await this.fetchWithAuth(`/reviews/laporan/${laporanId}`);
+      return result.data;
     } catch (error) {
       console.error('Error in getReviewsByLaporanId:', error);
       throw error;
