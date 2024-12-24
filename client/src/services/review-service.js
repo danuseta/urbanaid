@@ -1,5 +1,7 @@
+import { config } from '../config';
+
 class ReviewService {
-  static BASE_URL = 'https://urbanaid-server.up.railway.app';
+  static BASE_URL = config.BASE_URL;
 
   static async createReview(reviewData) {
     try {
@@ -10,7 +12,7 @@ class ReviewService {
 
       console.log('Sending review data:', reviewData);
 
-      const response = await fetch(`${this.BASE_URL}/api/reviews`, {
+      const response = await fetch(`${ReviewService.BASE_URL}/reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -39,7 +41,7 @@ class ReviewService {
         throw new Error('Token tidak ditemukan');
       }
 
-      const response = await fetch(`${this.BASE_URL}/api/reviews/laporan/${laporanId}`, {
+      const response = await fetch(`${ReviewService.BASE_URL}/reviews/laporan/${laporanId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

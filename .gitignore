@@ -1,8 +1,9 @@
 /server/.env/
+/client/.env/
 /client/src/lama/
 /server/z/
 /node_modules/
 /client/node_modules/
 /server/node_modules/
 node_modules/
-/client/dist/
+# /client/dist/

@@ -1,34 +1,39 @@
 import { config } from '../config';
-const { BASE_URL, CLIENT_URL } = config;
+const BASE_URL = config.BASE_URL;
+const CLIENT_URL = config.CLIENT_URL;
 
 const AuthService = {
   async login(email, password) {
     try {
       const url = `${BASE_URL}/auth/login`;
-      console.log('Login URL:', url);
-      console.log('Request body:', { email, password });
+      console.log('Full request details:', {
+        url,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: { email, password }
+      });
       
       const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password })
       });
-
+  
       console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers));
+      
       const responseJson = await response.json();
       console.log('Response data:', responseJson);
-
-      if (response.ok) {
-        localStorage.setItem('token', responseJson.data.token);
-        localStorage.setItem('user', JSON.stringify(responseJson.data.user));
-      }
-
+      
       return responseJson;
     } catch (error) {
-      console.error('Login error:', error);
-      throw new Error('Terjadi kesalahan saat login. Silakan coba lagi.');
+      console.error('Network or parsing error:', error);
+      throw error;
     }
   },
 

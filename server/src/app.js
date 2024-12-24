@@ -20,11 +20,15 @@ const validate = async (decoded, request, h) => {
 
 const init = async () => {
   const server = Hapi.server({
-    port: process.env.PORT || process.env.RAILWAY_PORT || 3000,
-    host: '0.0.0.0',
+    port: process.env.PORT || 5000,
+    host: process.env.HOST || '0.0.0.0',
     routes: {
       cors: {
-        origin: ['*'], // In production, specify your client domain
+        origin: [
+          process.env.NODE_ENV === 'development' 
+            ? process.env.DEV_CLIENT_URL 
+            : process.env.PROD_CLIENT_URL
+        ],
         headers: [
           'Accept',
           'Authorization',
