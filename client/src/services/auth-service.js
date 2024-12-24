@@ -1,49 +1,76 @@
-const BASE_URL = 'https://urbanaid-server.up.railway.app/api';
-const CLIENT_URL = 'https://urbanaid-client.vercel.app';
+import { config } from '../config';
+const { BASE_URL, CLIENT_URL } = config;
 
 const AuthService = {
   async login(email, password) {
-    const response = await fetch(`${BASE_URL}/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const url = `${BASE_URL}/auth/login`;
+      console.log('Login URL:', url);
+      console.log('Request body:', { email, password });
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const responseJson = await response.json();
+      console.log('Response status:', response.status);
+      const responseJson = await response.json();
+      console.log('Response data:', responseJson);
 
-    if (response.ok) {
-      localStorage.setItem('token', responseJson.data.token);
-      localStorage.setItem('user', JSON.stringify(responseJson.data.user));
+      if (response.ok) {
+        localStorage.setItem('token', responseJson.data.token);
+        localStorage.setItem('user', JSON.stringify(responseJson.data.user));
+      }
+
+      return responseJson;
+    } catch (error) {
+      console.error('Login error:', error);
+      throw new Error('Terjadi kesalahan saat login. Silakan coba lagi.');
     }
-
-    return responseJson;
   },
 
   async register(userData) {
-    const response = await fetch(`${BASE_URL}/auth/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userData),
-    });
+    try {
+      const url = `${BASE_URL}/auth/register`;
+      console.log('Register URL:', url);
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
 
-    return response.json();
+      return await response.json();
+    } catch (error) {
+      console.error('Register error:', error);
+      throw new Error('Terjadi kesalahan saat registrasi. Silakan coba lagi.');
+    }
   },
 
   async createAdmin(adminData) {
-    const response = await fetch(`${BASE_URL}/auth/admin/create`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.getToken()}`
-      },
-      body: JSON.stringify(adminData),
-    });
+    try {
+      const url = `${BASE_URL}/auth/admin/create`;
+      console.log('Create admin URL:', url);
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.getToken()}`
+        },
+        body: JSON.stringify(adminData),
+      });
 
-    return this.handleResponse(response);
+      return this.handleResponse(response);
+    } catch (error) {
+      console.error('Create admin error:', error);
+      throw new Error('Terjadi kesalahan saat membuat admin. Silakan coba lagi.');
+    }
   },
 
   logout() {
@@ -64,16 +91,21 @@ const AuthService = {
   },
 
   async handleResponse(response) {
-    const responseJson = await response.json();
+    try {
+      const responseJson = await response.json();
 
-    if (response.status === 401 &&
-        (responseJson.message?.toLowerCase().includes('expired') ||
-         responseJson.message?.toLowerCase().includes('invalid token'))) {
-      this.logout();
-      throw new Error('Sesi anda telah berakhir, silakan login kembali');
+      if (response.status === 401 &&
+          (responseJson.message?.toLowerCase().includes('expired') ||
+           responseJson.message?.toLowerCase().includes('invalid token'))) {
+        this.logout();
+        throw new Error('Sesi anda telah berakhir, silakan login kembali');
+      }
+
+      return responseJson;
+    } catch (error) {
+      console.error('Handle response error:', error);
+      throw error;
     }
-
-    return responseJson;
   },
 
   isAuthenticated() {
@@ -118,44 +150,49 @@ const AuthService = {
 
   getRedirectUrl() {
     const user = this.getUser();
-    if (!user) return `${CLIENT_URL}/login`;
+    if (!user) return '/login';
 
     if (user.role === 'superadmin') {
-      return `${CLIENT_URL}/admin/management`;
+      return '/admin/management';
     }
 
-    return user.role === 'admin'
-      ? `${CLIENT_URL}/admin`
-      : `${CLIENT_URL}/pelaporan`;
+    return user.role === 'admin' ? '/admin' : '/pelaporan';
   },
 
   async updateProfile(userId, data) {
-    const user = this.getUser();
-    const endpoint = user.role === 'admin'
-      ? `${BASE_URL}/auth/admin/profile/${userId}`
-      : `${BASE_URL}/auth/profile/${userId}`;
+    try {
+      const user = this.getUser();
+      const endpoint = user.role === 'admin'
+        ? `${BASE_URL}/auth/admin/profile/${userId}`
+        : `${BASE_URL}/auth/profile/${userId}`;
+      
+      console.log('Update profile URL:', endpoint);
 
-    const response = await fetch(endpoint, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.getToken()}`
-      },
-      body: JSON.stringify(data),
-    });
+      const response = await fetch(endpoint, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.getToken()}`
+        },
+        body: JSON.stringify(data),
+      });
 
-    const responseJson = await this.handleResponse(response);
+      const responseJson = await this.handleResponse(response);
 
-    if (response.ok) {
-      const currentUser = this.getUser();
-      const updatedUser = {
-        ...currentUser,
-        ...(user.role === 'admin' ? responseJson.data.admin : responseJson.data.user)
-      };
-      localStorage.setItem('user', JSON.stringify(updatedUser));
+      if (response.ok) {
+        const currentUser = this.getUser();
+        const updatedUser = {
+          ...currentUser,
+          ...(user.role === 'admin' ? responseJson.data.admin : responseJson.data.user)
+        };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+      }
+
+      return responseJson;
+    } catch (error) {
+      console.error('Update profile error:', error);
+      throw new Error('Terjadi kesalahan saat memperbarui profil. Silakan coba lagi.');
     }
-
-    return responseJson;
   },
 
   getHeaders() {
@@ -171,15 +208,23 @@ const AuthService = {
   },
 
   async resetPassword(nama, email, newPassword) {
-    const response = await fetch(`${BASE_URL}/auth/reset-password`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ nama, email, newPassword }),
-    });
-  
-    return response.json();
+    try {
+      const url = `${BASE_URL}/auth/reset-password`;
+      console.log('Reset password URL:', url);
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ nama, email, newPassword }),
+      });
+    
+      return await response.json();
+    } catch (error) {
+      console.error('Reset password error:', error);
+      throw new Error('Terjadi kesalahan saat reset password. Silakan coba lagi.');
+    }
   }
 };
 
