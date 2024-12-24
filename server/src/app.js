@@ -23,34 +23,39 @@ const init = async () => {
     host: '0.0.0.0',
     routes: {
       cors: {
-        origin: ['https://urbanaid-client.vercel.app'], 
-        headers: ['Accept', 'Authorization', 'Content-Type', 'X-Requested-With'],
-        additionalHeaders: [
-          'cache-control', 
-          'x-requested-with',
-          'Origin',
+        origin: ['https://urbanaid-client.vercel.app'],
+        headers: [
           'Accept',
+          'Authorization', 
+          'Content-Type',
+          'X-Requested-With',
+          'cache-control',
+          'Origin',
           'Access-Control-Request-Method',
           'Access-Control-Request-Headers'
         ],
         credentials: true,
         maxAge: 600
-      },
-      // files: {
-      //   relativeTo: Path.join(__dirname, '../client/dist')
-      // }
+      }
     },
   });
 
+  // Register plugins
   await server.register([
-    {
-      plugin: jwt
-    },
-    {
-      plugin: Inert
-    }
+    { plugin: jwt },
+    { plugin: Inert }
   ]);
 
+  // Configure JWT authentication
+  server.auth.strategy('jwt', 'jwt', {
+    key: process.env.JWT_SECRET,
+    validate,
+    verifyOptions: { algorithms: ['HS256'] }
+  });
+
+  server.auth.default('jwt');
+
+  // Static assets route
   server.route({
     method: 'GET',
     path: '/assets/{param*}',
@@ -63,6 +68,7 @@ const init = async () => {
     }
   });
 
+  // Global API route configuration
   server.route({
     method: ['POST', 'PUT', 'PATCH', 'DELETE'],
     path: '/api/{param*}',
@@ -76,21 +82,7 @@ const init = async () => {
     handler: (request, h) => h.continue
   });
 
-  server.route({
-    method: 'POST',
-    path: '/api/auth/{param*}',
-    method: ['POST', 'PUT', 'PATCH', 'DELETE'],
-    path: '/api/{param*}',
-    options: {
-      payload: {
-        parse: true,
-        allow: ['application/json'],
-        maxBytes: 1048576 // 1MB
-      }
-    },
-    handler: (request, h) => h.continue
-  });
-
+  // Auth routes configuration
   server.route({
     method: 'POST',
     path: '/api/auth/{param*}',
@@ -104,15 +96,7 @@ const init = async () => {
     handler: (request, h) => h.continue
   });
 
-  server.auth.strategy('jwt', 'jwt', {
-    key: process.env.JWT_SECRET,
-    validate,
-    verifyOptions: { algorithms: ['HS256'] },
-    verifyOptions: { algorithms: ['HS256'] },
-  });
-
-  server.auth.default('jwt');
-
+  // Combine all routes
   const routes = [
     ...authRoutes,
     ...statisticsRoutes,
@@ -124,6 +108,7 @@ const init = async () => {
 
   server.route(routes);
 
+  // Catch-all route for SPA
   server.route({
     method: 'GET',
     path: '/{path*}',
@@ -132,27 +117,7 @@ const init = async () => {
     }
   });
 
-  server.ext('onPreStart', () => {
-    console.log('Registering routes:');
-    routes.forEach((route) => {
-      if (Array.isArray(route.method)) {
-        route.method.forEach((method) => {
-          console.log(`  ${method.toUpperCase()} ${route.path}`);
-        });
-      } else {
-        console.log(`  ${route.method.toUpperCase()} ${route.path}`);
-      }
-    });
-  server.route(routes);
-
-  server.route({
-    method: 'GET',
-    path: '/{path*}',
-    handler: {
-      file: 'index.html'
-    }
-  });
-
+  // Log registered routes on startup
   server.ext('onPreStart', () => {
     console.log('Registering routes:');
     routes.forEach((route) => {
@@ -171,7 +136,6 @@ const init = async () => {
 };
 
 process.on('unhandledRejection', (err) => {
-  console.log(err);
   console.log(err);
   process.exit(1);
 });
