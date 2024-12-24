@@ -2,9 +2,6 @@
   "name": "urbanaid",
   "version": "1.0.0",
   "main": "index.js",
-  "engines": {
-    "node": ">=18.0.0"
-  },
   "scripts": {
     "start": "serve -s dist",
     "optimize-images": "node src/utils/sharp.js",
