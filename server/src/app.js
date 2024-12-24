@@ -152,6 +152,13 @@ const init = async () => {
     }
   });
 
+  app.use(cors({
+    origin: ['https://urbanaid-client.vercel.app', 'http://localhost:9000'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  }));
+
   // Global error handling
   server.ext('onPreResponse', (request, h) => {
     const response = request.response;
