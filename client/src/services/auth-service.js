@@ -1,67 +1,82 @@
-// auth-service.js
-import ApiService from './api-service';
-
+const BASE_URL = 'https://urbanaid-server.up.railway.app/api';
 const CLIENT_URL = 'https://urbanaid-client.vercel.app';
 
-class AuthService extends ApiService {
-  static async login(email, password) {
-    try {
-      const response = await fetch(`${this.BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+const AuthService = {
+  async login(email, password) {
+    const response = await fetch(`${BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-      const responseJson = await response.json();
+    const responseJson = await response.json();
 
-      if (response.ok) {
-        localStorage.setItem('token', responseJson.data.token);
-        localStorage.setItem('user', JSON.stringify(responseJson.data.user));
-      }
-
-      return responseJson;
-    } catch (error) {
-      return this.handleError(error);
+    if (response.ok) {
+      localStorage.setItem('token', responseJson.data.token);
+      localStorage.setItem('user', JSON.stringify(responseJson.data.user));
     }
-  }
 
-  static async register(userData) {
-    return fetch(`${this.BASE_URL}/auth/register`, {
+    return responseJson;
+  },
+
+  async register(userData) {
+    const response = await fetch(`${BASE_URL}/auth/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(userData),
-    }).then(response => response.json());
-  }
-
-  static async createAdmin(adminData) {
-    return this.fetchWithAuth('/auth/admin/create', {
-      method: 'POST',
-      body: JSON.stringify(adminData)
     });
-  }
 
-  static logout() {
+    return response.json();
+  },
+
+  async createAdmin(adminData) {
+    const response = await fetch(`${BASE_URL}/auth/admin/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.getToken()}`
+      },
+      body: JSON.stringify(adminData),
+    });
+
+    return this.handleResponse(response);
+  },
+
+  logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('remember_token');
     window.history.replaceState({}, document.title, '/login');
     window.location.href = '/login';
-  }
+  },
 
-  static getToken() {
+  getToken() {
     return localStorage.getItem('token');
-  }
+  },
 
-  static getUser() {
+  getUser() {
     const userStr = localStorage.getItem('user');
     return userStr ? JSON.parse(userStr) : null;
-  }
+  },
 
-  static isAuthenticated() {
+  async handleResponse(response) {
+    const responseJson = await response.json();
+
+    if (response.status === 401 &&
+        (responseJson.message?.toLowerCase().includes('expired') ||
+         responseJson.message?.toLowerCase().includes('invalid token'))) {
+      this.logout();
+      throw new Error('Sesi anda telah berakhir, silakan login kembali');
+    }
+
+    return responseJson;
+  },
+
+  isAuthenticated() {
     const token = this.getToken();
     const user = this.getUser();
 
@@ -84,24 +99,24 @@ class AuthService extends ApiService {
       this.logout();
       return false;
     }
-  }
+  },
 
-  static isAdmin() {
+  isAdmin() {
     const user = this.getUser();
     return user && user.role === 'admin';
-  }
+  },
 
-  static isSuperAdmin() {
+  isSuperAdmin() {
     const user = this.getUser();
     return user && user.role === 'superadmin';
-  }
+  },
 
-  static hasAdminAccess() {
+  hasAdminAccess() {
     const user = this.getUser();
     return user && (user.role === 'admin' || user.role === 'superadmin');
-  }
+  },
 
-  static getRedirectUrl() {
+  getRedirectUrl() {
     const user = this.getUser();
     if (!user) return `${CLIENT_URL}/login`;
 
@@ -112,20 +127,26 @@ class AuthService extends ApiService {
     return user.role === 'admin'
       ? `${CLIENT_URL}/admin`
       : `${CLIENT_URL}/pelaporan`;
-  }
+  },
 
-  static async updateProfile(userId, data) {
+  async updateProfile(userId, data) {
     const user = this.getUser();
     const endpoint = user.role === 'admin'
-      ? `/auth/admin/profile/${userId}`
-      : `/auth/profile/${userId}`;
+      ? `${BASE_URL}/auth/admin/profile/${userId}`
+      : `${BASE_URL}/auth/profile/${userId}`;
 
-    const responseJson = await this.fetchWithAuth(endpoint, {
+    const response = await fetch(endpoint, {
       method: 'PUT',
-      body: JSON.stringify(data)
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.getToken()}`
+      },
+      body: JSON.stringify(data),
     });
 
-    if (responseJson.data) {
+    const responseJson = await this.handleResponse(response);
+
+    if (response.ok) {
       const currentUser = this.getUser();
       const updatedUser = {
         ...currentUser,
@@ -135,20 +156,31 @@ class AuthService extends ApiService {
     }
 
     return responseJson;
-  }
+  },
 
-  static async resetPassword(nama, email, newPassword) {
-    return fetch(`${this.BASE_URL}/auth/reset-password`, {
+  getHeaders() {
+    if (!this.isAuthenticated()) {
+      this.logout();
+      throw new Error('Sesi anda telah berakhir, silakan login kembali');
+    }
+
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.getToken()}`
+    };
+  },
+
+  async resetPassword(nama, email, newPassword) {
+    const response = await fetch(`${BASE_URL}/auth/reset-password`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ nama, email, newPassword }),
-    }).then(response => response.json());
+    });
+  
+    return response.json();
   }
-
-  // Tambahkan BASE_URL sebagai static property
-  static BASE_URL = 'https://urbanaid-server.up.railway.app/api';
-}
+};
 
 export default AuthService;

@@ -1,69 +1,214 @@
-// superadmin-service.js
-import ApiService from './api-service';
+const BASE_URL = 'https://urbanaid-server.up.railway.app/api';
 
-class SuperAdminService extends ApiService {
-  static async getAllAdmins(page = 1, limit = 10, search = '') {
+const SuperAdminService = {
+  async getAllAdmins(page = 1, limit = 10, search = '') {
     try {
-      return await this.fetchWithAuth(`/superadmin/admins?page=${page}&limit=${limit}&search=${search}`);
+      const response = await fetch(`${BASE_URL}/superadmin/admins?page=${page}&limit=${limit}&search=${search}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch admins');
+      }
+
+      return await response.json();
     } catch (error) {
       console.error('Error fetching admins:', error);
-      return { data: [], total: 0 };
+      return {
+        data: [],
+        total: 0
+      };
     }
-  }
+  },
 
-  static async getAdminById(id) {
-    return this.fetchWithAuth(`/superadmin/admins/${id}`);
-  }
-
-  static async createAdmin(adminData) {
-    return this.fetchWithAuth('/superadmin/admins', {
-      method: 'POST',
-      body: JSON.stringify(adminData)
-    });
-  }
-
-  static async updateAdmin(id, updateData) {
-    return this.fetchWithAuth(`/superadmin/admins/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(updateData)
-    });
-  }
-
-  static async deleteAdmin(id) {
-    return this.fetchWithAuth(`/superadmin/admins/${id}`, {
-      method: 'DELETE'
-    });
-  }
-
-  static async getAllUsers(page = 1, limit = 10, search = '') {
+  async getAdminById(id) {
     try {
-      return await this.fetchWithAuth(`/superadmin/users?page=${page}&limit=${limit}&search=${search}`);
+      const response = await fetch(`${BASE_URL}/superadmin/admins/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch admin');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching admin:', error);
+      return null;
+    }
+  },
+
+  async createAdmin(adminData) {
+    try {
+      const response = await fetch(`${BASE_URL}/superadmin/admins`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(adminData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to create admin');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating admin:', error);
+      throw error;
+    }
+  },
+
+  async updateAdmin(id, updateData) {
+    try {
+      const response = await fetch(`${BASE_URL}/superadmin/admins/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update admin');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating admin:', error);
+      throw error;
+    }
+  },
+
+  async deleteAdmin(id) {
+    try {
+      const response = await fetch(`${BASE_URL}/superadmin/admins/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete admin');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error deleting admin:', error);
+      throw error;
+    }
+  },
+
+  async getAllUsers(page = 1, limit = 10, search = '') {
+    try {
+      const response = await fetch(`${BASE_URL}/superadmin/users?page=${page}&limit=${limit}&search=${search}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch users');
+      }
+
+      return await response.json();
     } catch (error) {
       console.error('Error fetching users:', error);
-      return { data: [], total: 0 };
+      return {
+        data: [],
+        total: 0
+      };
     }
-  }
+  },
 
-  static async getUserById(id) {
-    return this.fetchWithAuth(`/superadmin/users/${id}`);
-  }
-
-  static async updateUser(id, updateData) {
-    return this.fetchWithAuth(`/superadmin/users/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(updateData)
-    });
-  }
-
-  static async deleteUser(id) {
-    return this.fetchWithAuth(`/superadmin/users/${id}`, {
-      method: 'DELETE'
-    });
-  }
-
-  static async getSuperAdminStatistics() {
+  async getUserById(id) {
     try {
-      return await this.fetchWithAuth('/superadmin/statistics');
+      const response = await fetch(`${BASE_URL}/superadmin/users/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch user');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      return null;
+    }
+  },
+
+  async updateUser(id, updateData) {
+    try {
+      const response = await fetch(`${BASE_URL}/superadmin/users/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update user');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating user:', error);
+      throw error;
+    }
+  },
+
+  async deleteUser(id) {
+    try {
+      const response = await fetch(`${BASE_URL}/superadmin/users/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete user');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      throw error;
+    }
+  },
+
+  async getSuperAdminStatistics() {
+    try {
+      const response = await fetch(`${BASE_URL}/superadmin/statistics`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch statistics');
+      }
+
+      return await response.json();
     } catch (error) {
       console.error('Error fetching statistics:', error);
       return {
@@ -74,6 +219,6 @@ class SuperAdminService extends ApiService {
       };
     }
   }
-}
+};
 
 export default SuperAdminService;
