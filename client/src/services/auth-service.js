@@ -1,5 +1,5 @@
-const BASE_URL = 'https://urbanaid-api.vercel.app';
-const CLIENT_URL = 'http://localhost:9000';
+const BASE_URL = 'https://urbanaid-server.up.railway.app/api';
+const CLIENT_URL = 'https://urbanaid-client.vercel.app';
 
 const AuthService = {
   async login(email, password) {

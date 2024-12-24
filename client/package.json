@@ -2,7 +2,11 @@
   "name": "urbanaid",
   "version": "1.0.0",
   "main": "index.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
+    "start": "serve -s dist",
     "optimize-images": "node src/utils/sharp.js",
     "start-dev": "webpack serve --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
@@ -15,7 +19,7 @@
     "e2e": "codeceptjs run --steps"
   },
   "keywords": [],
-  "author": "@gmail.com>",
+  "author": "@gmail.com",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.26.0",
@@ -41,7 +45,6 @@
     "fake-indexeddb": "^4.0.2",
     "globals": "^15.14.0",
     "html-webpack-plugin": "^5.5.3",
-    "http-server": "^14.1.1",
     "image-minimizer-webpack-plugin": "^4.1.1",
     "imagemin": "^9.0.0",
     "imagemin-mozjpeg": "^9.0.0",
@@ -82,6 +85,7 @@
     "browserslist": "^4.24.2",
     "countup.js": "^2.8.0",
     "dayjs": "^1.11.13",
+    "http-server": "^14.1.1",
     "idb": "^8.0.0",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.4",

@@ -1,4 +1,4 @@
-const BASE_URL = 'https://urbanaid-api.vercel.app';
+const BASE_URL = 'https://urbanaid-server.up.railway.app/api';
 
 const StatisticService = {
   async getReportStatistics() {
